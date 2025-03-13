@@ -45,6 +45,3 @@ print(peaks)
 print("Odległości między kolejnymi prefiksami:")
 print(np.diff(peaks))
 print(len(corr))
-
-# -------------------------------
-# Wizualizacja fragmentu sygnału z zaznaczonymi prefiksami
