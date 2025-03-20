@@ -12,7 +12,7 @@ f1, f2, f3 = 50, 100, 150  # Częstotliwości składowych [Hz]
 A1, A2, A3 = 50, 100, 150  # Amplitudy składowych
 
 # Tworzenie oryginalnego sygnału x
-x = A1 * np.sin(2 * np.pi * f1 * t) + A2 * np.sin(2 * np.pi * f2 * t) + A3 * np.sin(2 * np.pi * f3 * t)
+x = A1 * np.cos(2 * np.pi * f1 * t) + A2 * np.cos(2 * np.pi * f2 * t) + A3 * np.cos(2 * np.pi * f3 * t)
 
 # Budowanie macierzy DCT (A) i IDCT (S)
 A = np.zeros((N, N))
@@ -66,7 +66,7 @@ print(f"Maksymalna różnica po rekonstrukcji: {np.max(np.abs(x - x_reconstructe
 print(f"Czy rekonstrukcja jest perfekcyjna? {np.allclose(x, x_reconstructed)}")
 
 # Modyfikacja: zmiana f2 na 105 Hz
-f2_mod = 110
+f2_mod = 105
 x_mod = A1 * np.sin(2 * np.pi * f1 * t) + A2 * np.sin(2 * np.pi * f2_mod * t) + A3 * np.sin(2 * np.pi * f3 * t)
 y_mod = A @ x_mod
 
