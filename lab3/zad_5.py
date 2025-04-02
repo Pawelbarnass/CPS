@@ -155,7 +155,7 @@ plt.show()
 # Usunięcie zakłócenia przez wyzerowanie współczynników w okolicy 250 Hz
 # Obliczenie indeksu odpowiadającego częstotliwości 250 Hz
 idx_250Hz = int(250 / (fs/2) * len(c_noisy))
-margin = 5  # Margines wokół indeksu (do dostosowania)
+margin = 25  # Margines wokół indeksu (do dostosowania)
 
 c_filtered = np.copy(c_noisy)
 c_filtered[idx_250Hz-margin:idx_250Hz+margin+1] = 0

@@ -9,7 +9,7 @@ for k in range(N):
         A[k, n] = s_k * np.cos((np.pi * k / N) * (n + 0.5))
 S = A.T
 I = A @ S
-print("Maksymalne odchylenie od macierzy jednostkowej:", 
+print("Maksymalne odchylenie od macierzy jednostkowej:",
       np.max(np.abs(I - np.eye(N))))
 print("Elementy diagonalne:", np.diag(I))
 x = np.random.randn(N)
@@ -18,7 +18,7 @@ x_s = S @ X
 print("Maksymalne odchylenie od wektora x:", np.max(np.abs(x - x_s)))
 plt.figure()
 t = np.linspace(0,1,N,endpoint=False)
-f =10
+f =7
 x_harmonic = np.sin(2*np.pi*f*t)
 np.random.seed(69)
 x_noise = np.random.randn(N)

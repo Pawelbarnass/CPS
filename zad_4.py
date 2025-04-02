@@ -135,11 +135,11 @@ def decode_qpsk(signal, fs=16000, T=0.1, fc=500):
         max_index = np.argmax(correlations)
 
         if max_index == 0:
-            decoded_bits += '00'  # Phase 45°
+            decoded_bits += '00'  
         elif max_index == 1:
-            decoded_bits += '01'  # Phase 135°
+            decoded_bits += '01'  
         elif max_index == 2:
-            decoded_bits += '10'  # Phase 315°
+            decoded_bits += '10'  
         else:
             decoded_bits += '11'
     

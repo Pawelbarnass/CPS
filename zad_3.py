@@ -15,7 +15,6 @@ def simple_correlate(signal, segment):
     for i in range(result_len):
         signal_segment = signal[i:i+L_segment]
         corr[i] = np.sum(signal_segment * segment_normalized)
-    
     return corr
 M = 32   
 N = 512   

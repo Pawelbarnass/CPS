@@ -65,8 +65,7 @@ x_reconstructed = S @ y
 print(f"Maksymalna różnica po rekonstrukcji: {np.max(np.abs(x - x_reconstructed))}")
 print(f"Czy rekonstrukcja jest perfekcyjna? {np.allclose(x, x_reconstructed)}")
 
-# Modyfikacja: zmiana f2 na 105 Hz
-f2_mod = 105
+f2_mod = 107
 x_mod = A1 * np.sin(2 * np.pi * f1 * t) + A2 * np.sin(2 * np.pi * f2_mod * t) + A3 * np.sin(2 * np.pi * f3 * t)
 y_mod = A @ x_mod
 
@@ -88,7 +87,7 @@ plt.tight_layout()
 
 # Sprawdzenie rekonstrukcji dla zmodyfikowanego sygnału
 x_mod_reconstructed = S @ y_mod
-print(f"\nDla f2 = 105 Hz:")
+print(f"\nDla f2 = 107 Hz:")
 print(f"Maksymalna różnica po rekonstrukcji: {np.max(np.abs(x_mod - x_mod_reconstructed))}")
 print(f"Czy rekonstrukcja jest perfekcyjna? {np.allclose(x_mod, x_mod_reconstructed)}")
 

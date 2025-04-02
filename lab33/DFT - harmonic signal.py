@@ -69,3 +69,45 @@ plt.title("Widmo amplitudowe dla f1 = 125 Hz")
 plt.xlabel("Częstotliwość [Hz]")
 plt.ylabel("Amplituda")
 plt.show()
+
+plt.figure(figsize=(12, 8))
+
+# Plots dla części rzeczywistej, urojonej i modułu pozostają bez zmian...
+
+# Lepszy sposób wyświetlania fazy:
+plt.subplot(2, 2, 4)
+amplitude_threshold = 0.05 * np.max(np.abs(X))  # Próg amplitudy (5% maksymalnej)
+
+# Maska do filtrowania nieistotnych wartości fazy
+mask = np.abs(X) > amplitude_threshold
+
+# Przygotuj dane do wyświetlenia (tylko znaczące fazy)
+phases = np.angle(X)
+freqs_masked = freqs[mask]
+phases_masked = phases[mask]
+
+# Wariant 1: Punkty tylko dla znaczących wartości
+plt.stem(freqs_masked, phases_masked, linefmt='C0-', markerfmt='C0o')
+
+# Wariant 2: Wszystkie punkty, ale nieznaczące są przyciemnione (opcjonalnie)
+plt.stem(freqs, phases, linefmt='gray', markerfmt='gray.', alpha=0.3)
+plt.stem(freqs_masked, phases_masked, linefmt='C0-', markerfmt='C0o')
+
+# Dodaj linie pomocnicze na poziomie ±π dla odniesienia
+plt.axhline(y=np.pi, color='r', linestyle='--', alpha=0.3)
+plt.axhline(y=-np.pi, color='r', linestyle='--', alpha=0.3)
+
+plt.title("Faza (tylko dla znaczących amplitud)")
+plt.xlabel("Częstotliwość [Hz]")
+plt.ylabel("Faza [rad]")
+plt.ylim([-np.pi-0.5, np.pi+0.5])  # Nieco większy zakres dla lepszej czytelności
+
+# Dodatkowe wyświetlanie fazy w stopniach na drugiej osi Y
+ax2 = plt.gca().twinx()
+ax2.set_ylim([-np.pi-0.5, np.pi+0.5])
+ax2.set_yticks([-np.pi, -np.pi/2, 0, np.pi/2, np.pi])
+ax2.set_yticklabels(['-180°', '-90°', '0°', '90°', '180°'])
+ax2.set_ylabel("Faza [stopnie]")
+
+plt.tight_layout()
+plt.show()
