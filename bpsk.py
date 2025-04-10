@@ -1,15 +1,20 @@
-import numpy as np
-import statistics as stat
-import freq_pl
-import importlib
-hash_map = {}
-polish_hash_map = freq_pl.polish_frequency()
-code_char = ("WXQOWK LXCFRXBCXUAWJO R URXLXCFRXBCXUAWJO J AKAWXQOBM WXNXRUSDEQOWKBCUKBM FDEPACOQK UO NOLDEOWDEROBM")
-code_char = code_char.replace(" ", "")
-for ascii_value in range(65,91):
-    char = chr(ascii_value)
-    hash_map[char] = 0
-for char in code_char:
-    hash_map[char] += 1
-for char, count in hash_map.items():
-    print(f"{char}: {100*count/len(code_char)}")
+import math
+import random
+
+def main():
+    n_trials = 1000000  # Liczba prób
+    coprime_count = 0
+    max_num = 10**9  # Zakres liczb od 1 do max_num
+
+    for _ in range(n_trials):
+        a = random.randint(1, max_num)
+        b = random.randint(1, max_num)
+        if math.gcd(a, b) == 1:
+            coprime_count += 1
+
+    probability = coprime_count / n_trials
+    pi_estimate = math.sqrt(6 / probability)
+    print(f"Os szacowana wartość π: {pi_estimate}")
+
+if __name__ == "__main__":
+    main()

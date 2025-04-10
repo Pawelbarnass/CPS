@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load the raw signal data
-random_signal_path = 'C:\\Users\\pawel\\CPS\\CPS\\random_signal.txt'
+random_signal_path = 'C:\\Users\\wiedzmok\\CPS\\random_signal.txt'
 signal = np.loadtxt(random_signal_path)
 
 # Compute FFT in Python
@@ -18,8 +18,8 @@ python_magnitude = np.abs(python_fft_normalized)
 python_phase = np.angle(python_fft_normalized)
 
 # Load both C++ results
-cpp_float = np.loadtxt('C:\\Users\\pawel\\CPS\\CPS\\lab4\\fft_results_float.dat')
-cpp_double = np.loadtxt('C:\\Users\\pawel\\CPS\\CPS\\lab4\\fft_results.dat')
+cpp_float = np.loadtxt('C:\\Users\\wiedzmok\\CPS\\lab4\\fft_results_float.dat')
+cpp_double = np.loadtxt('C:\\Users\\wiedzmok\\CPS\\lab4\\fft_results.dat')
 
 # Extract magnitude and phase from both C++ results
 cpp_float_magnitude = cpp_float[:, 3]
