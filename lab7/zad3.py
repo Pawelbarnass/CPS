@@ -121,6 +121,11 @@ plt.plot(y2[:10000], label='Prawy kanał')
 plt.legend()
 plt.show()
 
+y1_noshift = 0.5*(ym[:len(ys)] + ys)
+y2_noshift = 0.5*(ym[:len(ys)] - ys)
+cross_talk_noshift = 20*np.log10(np.max(np.abs(y1_noshift - y2_noshift)))
+print(f'Poziom przesłuchu PRZED kompensacją opóźnienia: {cross_talk_noshift:.2f} dB')
+
 # Sprawdzenie przesłuchu
 cross_talk = 20*np.log10(np.max(np.abs(y1 - y2)))
 print(f'Poziom przesłuchu: {cross_talk:.2f} dB')
