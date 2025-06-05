@@ -11,6 +11,36 @@ LPC_ORDER = 20    # Rząd filtru LPC
 POLY_ORDER_RESIDUAL_SPECTRAL_ENVELOPE = 7 # Rząd wielomianu do aproksymacji widma resztkowego
 
 # --- Funkcje pomocnicze ---
+def detect_voiced_unvoiced(frame, prev_pitch=[0], prev_energy=[0.1], energy_alpha=0.9, corr_thresh=0.3, cepstrum_thresh=0.1):
+    # Energia
+    energy = np.sum(frame**2) / len(frame)
+    prev_energy[0] = energy_alpha * prev_energy[0] + (1 - energy_alpha) * energy
+    energy_thresh = 0.5 * prev_energy[0]
+    # Autokorelacja
+    corr = np.correlate(frame, frame, mode='full')
+    corr = corr[len(corr)//2:]
+    corr[0] = 0
+    fs = 8000
+    min_lag = int(fs/400)
+    max_lag = int(fs/60)
+    pitch_lag = np.argmax(corr[min_lag:max_lag]) + min_lag
+    pitch_val = corr[pitch_lag]
+    norm_peak = pitch_val / (np.sum(frame**2) + 1e-12)
+    # Kepstrum
+    spectrum = np.fft.fft(frame)
+    log_spectrum = np.log(np.abs(spectrum) + 1e-12)
+    cepstrum = np.fft.ifft(log_spectrum).real
+    min_pitch = int(fs / 400)
+    max_pitch = int(fs / 60)
+    cep_peak = np.max(np.abs(cepstrum[min_pitch:max_pitch]))
+    # Adaptacja tonu podstawowego
+    if prev_pitch[0] > 0:
+        if abs(pitch_lag - prev_pitch[0]) > 10:
+            pitch_lag = prev_pitch[0]
+    prev_pitch[0] = pitch_lag
+    # Detekcja
+    is_voiced = (energy > energy_thresh) and (norm_peak > corr_thresh) and (cep_peak > cepstrum_thresh)
+    return is_voiced, pitch_lag
 
 def load_wav(filename):
     """Wczytuje plik WAV."""
@@ -85,6 +115,7 @@ def lpc_encoder(signal, frame_size, hop_size, lpc_order, mode="full_residual", p
 
         frame_windowed = frame * window
         frame_windowed = frame_windowed - np.mean(frame_windowed)  # USUWANIE DC OFFSETU
+        is_voiced, pitch = detect_voiced_unvoiced(frame_windowed)
 
         # 1. Obliczanie współczynników LPC (filtr A(z))
         try:
@@ -206,7 +237,7 @@ if __name__ == "__main__":
         )
         output_filename_full = f"{audio_file.split('.')[0]}_reconstructed_full_residual.wav"
         save_wav(output_filename_full, sample_rate, reconstructed_signal_full)
-        # plot_signals(signal, reconstructed_signal_full, title=f"Pełny resztkowy - {audio_file}")
+        plot_signals(signal, reconstructed_signal_full, title=f"Pełny resztkowy - {audio_file}")
 
         # 2. Opcjonalne: Kodowanie/dekodowanie z uproszczonym sygnałem resztkowym
         print("\n*** Metoda: Uproszczony sygnał resztkowy (obwiednia widmowa) ***")
@@ -222,16 +253,6 @@ if __name__ == "__main__":
         )
         output_filename_simp = f"{audio_file.split('.')[0]}_reconstructed_simplified_residual.wav"
         save_wav(output_filename_simp, sample_rate, reconstructed_signal_simp)
-        # plot_signals(signal, reconstructed_signal_simp, title=f"Uproszczony resztkowy - {audio_file}")
+        plot_signals(signal, reconstructed_signal_simp, title=f"Uproszczony resztkowy - {audio_file}")
 
         print(f"Zakończono przetwarzanie {audio_file}")
-
-    print("\nPorównanie jakości:")
-    print("Odsłuchaj wygenerowane pliki *_reconstructed_full_residual.wav oraz *_reconstructed_simplified_residual.wav.")
-    print("Porównaj je z oryginalnymi plikami.")
-    print("Zwróć uwagę na:")
-    print("  - Ogólną jakość dźwięku, naturalność.")
-    print("  - Obecność artefaktów (np. metaliczność, szumy, zniekształcenia).")
-    print("  - Zachowanie charakterystyki głosu/instrumentu.")
-    print("Pełny sygnał resztkowy powinien dać lepszą jakość niż uproszczony, kosztem większej ilości danych do przesłania (cała ramka resztkowa vs. kilka współczynników wielomianu).")
-    print("Uproszczony sygnał resztkowy (z obwiednią widmową i losową fazą) może brzmieć bardziej 'szumiąco' lub 'syntetycznie', ponieważ traci informację o fazie i dokładnej strukturze harmonicznych sygnału resztkowego.")
